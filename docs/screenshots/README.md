@@ -2,7 +2,7 @@
 
 2026-10-21 · Board source: `a4da10e57b40d234d6d44060abb34bc2e179e532` · DSH `0.2.1-rc.2` · Node 22 · Chrome via Playwright.
 
-四张 PNG 均为 1440 × 1000、中文、浅色界面。两份 README 使用相对路径共用资源。
+四张演示 PNG 均为 1440 × 1000、中文、浅色界面。两份 README 使用相对路径共用资源。
 
 - `01-empty.png`: 当前 `client.js` 的空状态，注入空快照。没有停用或清空本机任务。
 - `02-setup.png`: 浏览器渲染的文档说明卡；不是产品截图或虚构的 setup 向导。命令与 README 安装流程一致，`/Users/demo/Projects/demo/always-on-board` 为虚构绝对路径，实际使用须替换。
@@ -44,3 +44,13 @@ Each final PNG was opened and visually checked at full size:
 | 04 | “解释” highlighted; full draft, task ID, configuration and send control visible | Synthetic task and `~/Library/LaunchAgents` only; no chat history or submitted message |
 
 No private source screenshot, hostname, avatar, real business label, email, credential, personal absolute path or conversation history was captured into these assets. The generic DSH logo and default workspace are host UI. Final assets carry “隔离演示 / 示例数据”. Screenshots and generation inputs are reviewed together; do not replace fixtures with a real state endpoint response.
+
+## Real screenshot excerpt / 真实截图节选
+
+Added 2026-10-21: `05-real-public-tasks.png` (2674 × 912) is derived from a user-provided real screenshot. It is separate from the four synthetic-data tour images above.
+
+At the user's request, sensitive rows were removed completely and the remaining row strips joined in their original order. The original title, controls and table header are retained. The sidebar, personal mascot, full-list counts and section total are omitted. No replacement task names, descriptions, status icons or other task data were generated or painted over.
+
+The 8 retained rows are Docker socket, Docker vmnetd, Chrome Keystone agent, Chrome Keystone XPC service, Office licensing, Java updater, Razer uninstaller watcher and Chrome updater. Visual review confirmed that no private project name, VPN/proxy entry, chat history, personal path, hostname, email, credential or local service endpoint remains. The image is an edited list excerpt, not the full original board or evidence of current service health.
+
+`crop-public-rows.cjs` records the deterministic crop coordinates and validates the original dimensions. It requires Sharp from an external tool environment and takes the private input path as an argument. The raw screenshot and the earlier masked preview remain outside Git; only this reviewed derivative is published. The captions in both READMEs disclose the cropping and row removal. No task or process was modified.

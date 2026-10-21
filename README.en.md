@@ -8,6 +8,12 @@ AI coding makes it easy to start APIs, workers, scheduled scripts and tunnels. A
 
 The goal is to reduce unnecessary resource use and keep useful tasks stable. Energy savings have not been measured or guaranteed.
 
+## Real screenshot excerpt
+
+Captured from the real local board, with only public task entries retained. The sidebar, personal information and entire sensitive rows have been removed. This is a list excerpt; task text and status icons are unchanged.
+
+![Real task list excerpt showing Docker, Chrome, Office, Java and Razer; sensitive entries removed](docs/images/05-real-public-tasks.png)
+
 ## A four-step tour
 
 These illustrations use synthetic data in an isolated DSH host, not production evidence. The setup image is a configuration guide, not a product wizard. Both READMEs share the same Chinese-language images.

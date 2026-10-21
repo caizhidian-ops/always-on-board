@@ -10,6 +10,12 @@ Always-on Board 把这些任务集中展示在 DeepSeek Harness（DSH）里，�
 
 [English](README.en.md) · [安装](#安装到-dsh) · [使用](#怎么用) · [JSON](#给-agent-的-json) · [边界](#状态如何理解)
 
+## 真实界面节选
+
+来自本机真实截图，仅保留可公开的任务。已裁剪侧栏、个人信息并整行移除敏感任务；这是列表节选，任务文字与状态保留原样。
+
+![真实任务列表节选：Docker、Chrome、Office、Java 和 Razer；已移除敏感条目](docs/images/05-real-public-tasks.png)
+
 ## 四步了解看板
 
 以下为隔离 DSH 中使用合成数据渲染的示意，非生产运行证据；安装图是配置说明，不是产品向导。四张图共用中文界面。
