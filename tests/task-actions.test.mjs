@@ -28,3 +28,8 @@ test('process actions carry fresh identity and scope checks instead of a fake pl
  assert.ok(!menuLabels(processTask).includes('fill'))
  assert.ok(prompt(processTask,'explain').includes('只查看，不修改'))
 })
+test('English action drafts preserve the same evidence and authorization boundaries',()=>{
+ const processTask={id:'process:en',kind:'process',category:'agent',management:'unassociated',rootPids:[42],members:[{pid:42,ppid:1,startedAt:'fixture-start',identity:'fixture-identity'}],ports:[]}
+ const text=prompt(processTask,'explain','en')
+ assert.ok(text.includes('Read only'));assert.ok(text.includes('unmatched does not prove terminal origin'));assert.ok(text.includes('fixture-identity'));assert.ok(text.includes('PID reuse'));assert.ok(text.includes('do not stop the entire IDE'))
+})

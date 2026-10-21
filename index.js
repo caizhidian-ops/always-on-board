@@ -91,11 +91,13 @@ function readArray(xml, key) {
 /** `launchctl list` -> label -> { pid, lastExit }. */
 async function readLaunchctl() {
   const map = new Map()
+  map.available = false
   try {
     const { stdout } = await execFileAsync('/bin/launchctl', ['list'], {
       timeout: 4000,
       maxBuffer: 8 * 1024 * 1024,
     })
+    map.available = true
     for (const line of stdout.split('\n')) {
       const parts = line.split('\t')
       if (parts.length < 3) continue
@@ -140,7 +142,9 @@ function titleOf(label) {
  * fail  stopped with a non-zero last exit, or declared KeepAlive without a process
  * idle  scheduled, never ran yet (or last run was clean and is simply waiting)
  */
-function classify(task, now) {
+export function classify(task, now) {
+  if (task.runtimeStatus === 'not-loaded') return {state:'idle',reason:'not-loaded'}
+  if (task.runtimeStatus === 'unknown') return {state:'idle',reason:'runtime-unknown'}
   const intervalMs = task.interval ? task.interval * 1000 : null
   const staleAfter = intervalMs ? Math.max(intervalMs * 2.5, 15 * 60 * 1000) : 30 * 60 * 60 * 1000
   const logAge = typeof task.lastUpdate === 'number' ? now - task.lastUpdate : null
@@ -168,7 +172,9 @@ async function collectOne(source, file, launchctl, now) {
   const plistPath = join(source.dir, file)
   const xml = await readFile(plistPath, 'utf8')
   const label = readString(xml, 'Label') || basename(file, '.plist')
-  const live = launchctl.get(label) || { pid: null, lastExit: null }
+  const observed = source.scope === 'user' && launchctl.available
+  const live = (observed && launchctl.get(label)) || { pid: null, lastExit: null }
+  const runtimeStatus = !observed ? 'unknown' : launchctl.has(label) ? 'loaded' : 'not-loaded'
   const parsed = xml
 
   const programArguments = readArray(parsed, 'ProgramArguments')
@@ -193,6 +199,9 @@ async function collectOne(source, file, launchctl, now) {
     id: label,
     title: titleOf(label),
     scope: source.scope,
+    runtimeStatus,
+    management: runtimeStatus === 'loaded' ? 'launchd' : 'definition',
+    workingDirectory: readString(parsed, 'WorkingDirectory') || null,
     plistPath: shortenPath(plistPath),
     program: program ? shortenPath(program) : null,
     args,

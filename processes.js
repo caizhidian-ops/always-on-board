@@ -82,7 +82,7 @@ export function buildProcessGroups(processes, metadata, launchTasks, projectPath
     const category=tool?'agent':project && project!=='/' && project!==homedir()?'project':'other'
     const label=tool || (category==='project'?basename(project):'Unattributed processes')
     const key=`${category}:${tool || (category==='project'?project:`${p.program}:${pid}`)}`
-    if(!groups.has(key))groups.set(key,{id:`process:${hash(key)}`,kind:'process',category,groupLabel:label,title:label,projectPath:category==='project'?project:null,
+    if(!groups.has(key))groups.set(key,{id:`process:${hash(key)}`,kind:'process',category,management:'unassociated',sourceStatus:'unknown',groupLabel:label,title:label,projectPath:category==='project'?project:null,
       scope:'user',program:p.program,args:[],running:true,state:'ok',reason:'running',pid,rootPids:[],ids:[],lastUpdate:Date.now(),plistPath:null})
     const g=groups.get(key);g.ids.push(...ids);g.rootPids.push(pid)
   }
@@ -120,6 +120,18 @@ export async function collectProcesses(launchTasks) {
   for(const p of processes) {
     const target=p.command.match(/--directory\s+(.+?)(?=\s+--|$)/)?.[1]
     if(target?.startsWith('/') && await stat(target).then(s=>s.isDirectory(),()=>false)) paths.set(p.pid,await projectPath(target,paths))
+  }
+  for (const task of launchTasks) {
+    const cwd = task.workingDirectory || metadata.get(task.pid)?.cwd
+    const command = [task.program,...(task.args || [])].join(' ')
+    const tool = agentTool(command,cwd || '')
+    const directory = command.match(/--directory\s+(.+?)(?=\s+--|$)/)?.[1]
+    const candidate = directory?.startsWith('/') ? directory : cwd
+    const project = candidate ? await projectPath(candidate,paths) : null
+    task.category = tool ? 'agent' : project ? 'project' : 'other'
+    task.projectPath = tool ? null : project
+    task.groupLabel = tool || (project ? basename(project) : null)
+    task.purposeEvidence = tool ? 'tool-pattern' : project ? 'directory-inference' : 'unknown'
   }
   const tasks=buildProcessGroups(processes,metadata,launchTasks,paths).map(t=>({...t,observedAt}))
   if(processes.some(p=>!metadata.get(p.pid)?.cwd))gaps.push('Some working directories unavailable; project attribution may be incomplete.')
