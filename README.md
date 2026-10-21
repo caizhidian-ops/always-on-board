@@ -12,9 +12,9 @@ Always-on Board 把这些任务集中展示在 DeepSeek Harness（DSH）里，�
 
 ## 真实界面节选
 
-来自本机真实截图，仅保留可公开的任务。已裁剪侧栏、个人信息并整行移除敏感任务；这是列表节选，任务文字与状态保留原样。
+从本机真实采集数据中选取 3 个个人项目任务和 3 个运行进程组，在隔离 DSH 中渲染当前界面。仅展示选定条目，已去除私人路径、主机信息和会话侧栏；用途注释沿用原截图。
 
-![真实任务列表节选：Docker、Chrome、Office、Java 和 Razer；已移除敏感条目](docs/images/05-real-public-tasks.png)
+![真实数据节选：个人项目的 API、看板服务，以及 Remotion、Blender MCP、Code Review MCP 进程组](docs/images/05-real-public-tasks.png)
 
 ## 四步了解看板
 

@@ -45,12 +45,19 @@ Each final PNG was opened and visually checked at full size:
 
 No private source screenshot, hostname, avatar, real business label, email, credential, personal absolute path or conversation history was captured into these assets. The generic DSH logo and default workspace are host UI. Final assets carry “隔离演示 / 示例数据”. Screenshots and generation inputs are reviewed together; do not replace fixtures with a real state endpoint response.
 
-## Real screenshot excerpt / 真实截图节选
+## Real data excerpt / 真实数据节选
 
-Added 2026-10-21: `05-real-public-tasks.png` (2674 × 912) is derived from a user-provided real screenshot. It is separate from the four synthetic-data tour images above.
+Updated 2026-10-21: `05-real-public-tasks.png` (2640 × 1000) replaces the vendor-only crop. It shows three personal-project tasks (innote API, Gray Hole dashboard and ImportantKanban) and three running process groups (Remotion, Blender MCP and Code Review MCP).
 
-At the user's request, sensitive rows were removed completely and the remaining row strips joined in their original order. The original title, controls and table header are retained. The sidebar, personal mascot, full-list counts and section total are omitted. No replacement task names, descriptions, status icons or other task data were generated or painted over.
+This is **real collection data filtered before rendering**, not a pixel crop of the original screenshot or a synthetic fixture. `collect-public-excerpt.mjs` runs the current collector with its notes-writing call replaced by a read-only notes read. It selects exactly six allowlisted entries and exports only display fields to a temporary file outside Git. Purpose annotations for the three persistent tasks are transcribed from the user's original screenshot; they are annotations, not newly verified service behavior. Actual states, ports, update times and instance/process counts come from collection. Header counts refer only to the six selected rows.
 
-The 8 retained rows are Docker socket, Docker vmnetd, Chrome Keystone agent, Chrome Keystone XPC service, Office licensing, Java updater, Razer uninstaller watcher and Chrome updater. Visual review confirmed that no private project name, VPN/proxy entry, chat history, personal path, hostname, email, credential or local service endpoint remains. The image is an edited list excerpt, not the full original board or evidence of current service health.
+`capture-public-excerpt.cjs` loads that display projection into the isolated no-op host described above, blocks external requests and captures only the board panel. No personal path, hostname, command arguments, identity hash, VPN/proxy entry, credentials or conversation history is published. The raw snapshot and original screenshot remain outside Git. No model messages or task actions are performed.
 
-`crop-public-rows.cjs` records the deterministic crop coordinates and validates the original dimensions. It requires Sharp from an external tool environment and takes the private input path as an argument. The raw screenshot and the earlier masked preview remain outside Git; only this reviewed derivative is published. The captions in both READMEs disclose the cropping and row removal. No task or process was modified.
+Reproduce after starting a new isolated host with `prepare-host.mjs`:
+
+```sh
+node docs/screenshots/collect-public-excerpt.mjs /tmp/aob-public-excerpt.json
+AOB_HOST_LOG=/tmp/aob-docs-example.log node docs/screenshots/capture-public-excerpt.cjs /tmp/aob-public-excerpt.json
+```
+
+Node 22 and external Playwright/Chrome are required. Collection fails if an allowlisted entry is absent rather than inventing it. The final image was visually reviewed row by row: both flat sections, all six names/descriptions, status icons, counts and ports are readable. Browser checks verify six rows and reject unexpected private-path/network-tool text. The original four tour images remain synthetic demonstrations and are unchanged.

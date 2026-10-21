@@ -10,9 +10,9 @@ The goal is to reduce unnecessary resource use and keep useful tasks stable. Ene
 
 ## Real screenshot excerpt
 
-Captured from the real local board, with only public task entries retained. The sidebar, personal information and entire sensitive rows have been removed. This is a list excerpt; task text and status icons are unchanged.
+Three personal-project tasks and three running process groups were selected from real local collection data and rendered with the current UI in an isolated DSH host. Only selected entries are shown; private paths, host details and the conversation sidebar are excluded. Purpose annotations are retained from the original screenshot.
 
-![Real task list excerpt showing Docker, Chrome, Office, Java and Razer; sensitive entries removed](docs/images/05-real-public-tasks.png)
+![Real data excerpt showing personal-project API and dashboard tasks, plus Remotion, Blender MCP and Code Review MCP process groups](docs/images/05-real-public-tasks.png)
 
 ## A four-step tour
 
