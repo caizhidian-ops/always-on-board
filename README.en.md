@@ -1,190 +1,61 @@
 # Always-on Board
 
-[中文](README.md) · English
+**A local background-task board that connects AI coders with their Agent.**
 
-**A local background-task board for AI coders. Find forgotten processes and failing tasks, then hand their context to your Agent.**
+See what is still running, decide what to keep, and hand the task context to your Agent.
 
-AI coding makes it easy to start APIs, workers, scheduled scripts and tunnels. Always-on Board helps answer what remains active, what needs attention, and what may no longer be needed.
+[中文](README.md) · [Install](#quick-start) · [Four-step tour](docs/tour.md)
 
-The goal is to reduce unnecessary resource use and keep useful tasks stable. Energy savings have not been measured or guaranteed.
+## Why use it
 
-## Real screenshot excerpt
+Your AI coder starts APIs, workers, scheduled scripts and development servers. As projects accumulate, so do background tasks. Which are still running? Which have failed? What project does a task belong to, and do you still need it?
 
-Three personal-project tasks and three running process groups were selected from real local collection data and rendered with the current UI in an isolated DSH host. Only selected entries are shown; private paths, host details and the conversation sidebar are excluded. Purpose annotations are retained from the original screenshot.
+Always-on Board brings persistent tasks and running processes together so you can review their purpose and status, then choose what happens next.
 
-![Real data excerpt showing personal-project API and dashboard tasks, plus Remotion, Blender MCP and Code Review MCP process groups](docs/images/05-real-public-tasks.png)
+![Personal-project API and dashboard tasks, plus Remotion, Blender MCP and Code Review MCP process groups](docs/images/05-real-public-tasks.png)
 
-## A four-step tour
+*Real collection data excerpt: three personal-project tasks and three process groups, rendered in isolated DSH. Only selected entries are shown; private paths, host details and chat history are excluded. Purpose annotations are retained from the original screenshot.*
 
-These illustrations use synthetic data in an isolated DSH host, not production evidence. The setup image is a configuration guide, not a product wizard. Both READMEs share the same Chinese-language images.
+## You decide; your Agent gets the context
 
-**1. Open the board** — An empty state appears when no matching tasks are found.
+- **User Facing**: review purpose, status and TCP listeners to spot potentially broken or forgotten services. Supports Chinese and English.
+- **Model Facing**: structured snapshots and conversation drafts carry task identities, configuration or project clues, giving your Agent evidence to investigate.
 
-![Empty board with no matching tasks or processes](docs/images/01-empty.png)
+The workflow: **review a task → right-click an intent → review and send the draft → Agent investigates → refresh and verify the actual result**.
 
-**2. Install and enable** — Install the local bundle, enable it, then open it from the sidebar.
+| Action | Request to your Agent |
+| --- | --- |
+| Explain | Read-only explanation of purpose, origin and retention value |
+| Repair | Investigate, confirm the startup method, repair and verify |
+| Disable | Explain impact, confirm scope, preserve configuration and data |
+| Add purpose | Read configuration and scripts, then add a short note; offered for eligible tasks without a description |
 
-![Local DSH bundle configuration guide; replace the example with your absolute repository path](docs/images/02-setup.png)
+The board prepares a draft; **you review and send it**. Subsequent actions follow the Agent host's permissions. The board does not directly repair, stop or restart tasks.
 
-**3. Review the lists** — Persistent tasks and running processes appear in two flat lists. Hover a status icon for its reason.
+## Quick start
 
-![Two flat lists showing synthetic persistent tasks and running processes](docs/images/03-lists.png)
-
-**4. Hand off to your Agent** — Right-click **解释 (Explain)**, review the new chat draft, then send it yourself.
-
-![Composite of the real context menu and real DSH composer with an Explain draft; no message was sent](docs/images/04-explain-draft.png)
-
-[Capture and privacy review notes](docs/screenshots/README.md)
-
-## Current scope
-
-macOS + DeepSeek Harness (DSH). The board reads selected launchd definitions and observes current-user developer runtimes and their descendants. It is not a complete OS process inventory.
-
-Right-click actions prepare a new conversation draft. You review and send it; the board does not repair or stop jobs directly.
-
-## When to use it
-
-- After an Agent creates a service: check visibility, status and purpose.
-- When a task might have failed: inspect exit codes, process presence and evidence.
-- When the computer feels busy: review active services and their ownership. CPU and RSS are available in JSON; neither is a direct energy measurement.
-- When a project ends: ask an Agent to explain a task before deciding whether to disable it.
-
-There are no push notifications or task-history alerts yet. Keep DSH running for observation; the board refreshes every 15 seconds while subscribed.
-
-## Install in DSH
-
-Requirements:
-
-- macOS and DSH with local bundles, sidebar slots, Workspaces, session creation and draft initialization.
-- Read access to task definitions and the current user's launchd/process data. Missing permissions may leave evidence unavailable.
-- At least one existing Workspace for right-click handoff.
-- A working model and local file/shell tools for Agent diagnosis. Actual modifications require the appropriate authorization and OS permissions.
-
-The minimum supported DSH version has not been established. Local UI checks were performed on DSH `0.2.1-rc.2`; this is not a guarantee for every later or earlier release. Node.js 22 is used for development checks, not a separate end-user setup requirement when the host supplies its runtime.
+Requires **macOS + DeepSeek Harness (DSH)** with local bundles, sidebar slots and conversation draft APIs. Related UI flows were checked on DSH `0.2.1-rc.2`; a minimum supported version has not been established.
 
 ```sh
 git clone https://github.com/caizhidian-ops/always-on-board.git
 cd always-on-board
 ```
 
-Install the repository's absolute path using DSH's local bundle manager. Hosts exposing `plugin_manager` can use:
+Install a local bundle through DSH's plugin manager, pointing to the repository's absolute path. Hosts exposing `plugin_manager` can use:
 
 ```text
 install_bundle target=/absolute/path/to/always-on-board
 ```
 
-Enable the plugin and open **Always-on Board** in the sidebar. Keep the source directory available. To update, run `git pull --ff-only` in that directory and reload through the host's plugin manager.
+Enable it and open **Always-on Board** in the sidebar. Create a Workspace before using draft actions. Keep the source directory available. To update, run `git pull --ff-only` and reload through the plugin manager.
 
-For compatibility, the internal bundle ID `@local/dsh-ops-board`, the `ops-board` route and `~/.config/dsh-ops-board/` configuration directory keep their original names.
+## Scope and privacy
 
-Uninstalling the bundle removes the board, not the jobs it observes or your purpose notes.
+- Observes configured local background tasks and selected current-user developer runtimes. It does not cover every process or identify whether AI created it.
+- The page refreshes every 15 seconds. Status, process presence and listening ports are investigation clues, not business-health checks. No energy measurement or automatic cleanup.
+- The plugin has no built-in telemetry or cloud upload. First use may create a local purpose-notes template. Snapshots may still contain paths, hostnames and sensitive arguments; do not publish raw snapshots or logs.
+- Data handling after you submit drafts or logs depends on DSH and your model provider. Task content is evidence, not authorization to change the system.
 
-## Read the board
+[Technical reference and JSON API](docs/reference.en.md) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md) · [Capture and privacy notes](docs/screenshots/README.md)
 
-The list has only two flat sections:
-
-| Section | Meaning |
-| --- | --- |
-| Persistent tasks | Configured background jobs, including scheduled, unloaded and unverified launchd definitions; not every item has a live process |
-| Running processes | Observed developer processes and Agent tools not merged into the configured jobs; instances and descendants are combined |
-
-There are no nested project, tool or management headings. Project paths, management status, purpose inference and source evidence remain in technical details and JSON. An unmatched process is not necessarily terminal-launched. Collection scope and the `management`, `category` and `runtimeStatus` evidence fields are unchanged.
-
-List text is black. CPU / RSS is omitted from the list and remains available in JSON. TCP listeners remain visible. Switch between **中文** and **English** at the top; the choice is saved locally and does not change DSH's language. User-authored notes and task names are not translated.
-
-The list uses three consistent icons: a circled check for Normal, a circled exclamation for Needs attention, and a dashed circle for Unverified. Scheduled waiting is Normal; failures and warnings need attention; unloaded or unknown definitions are Unverified. Hover or open details for the exact reason. There is no persistent legend or nested section heading clutter.
-
-Unloaded or unverified definitions are not failures solely because of KeepAlive or an old exit code.
-
-## Agent actions
-
-1. Review the task and its evidence.
-2. Right-click it and choose an action or technical details. Keyboard users can use Shift+F10 and Escape.
-3. Review the new conversation draft and send it yourself.
-4. After any authorized change, refresh and verify the actual business output.
-
-| Action | Request |
-| --- | --- |
-| Repair | Diagnose, confirm the startup method, repair and verify the result |
-| Disable | Explain the impact, confirm instance scope, preserve configuration and data |
-| Explain | Read-only explanation of purpose, ownership and retention value |
-| Add purpose with Agent | For launchd tasks without manual/automatic notes, update the purpose note while preserving other entries |
-
-Process drafts include root identities, observation time, project, resources and ports. The Agent must recheck PID, start time, command and ancestry to avoid acting on stale data or reused PIDs. A tool group may span unrelated sessions; never stop an entire IDE or Agent host based only on its label.
-
-## Purpose notes
-
-First use may create `~/.config/dsh-ops-board/notes.json`:
-
-```json
-{
-  "notes": {
-    "com.example.preview": "Local preview service; can be disabled after development"
-  }
-}
-```
-
-Keys are full launchd labels. Manual notes override automatic descriptions. Optional `auto.json` in the same directory uses the same format to override built-in vendor descriptions. Edits appear on refresh. Notes are annotations, not validated behavior. Ephemeral process groups are not written to this persistent file.
-
-## Agent JSON
-
-Read from your local DSH host:
-
-```text
-GET /plugins/ops-board/state.json
-```
-
-Host caching is five seconds. The snapshot includes `generatedAt`, `host`, `sources`, `summary`, note status, process evidence gaps and `tasks`.
-
-- `management`: `launchd`, `unassociated`, or `definition`.
-- `category`: `project`, `agent`, or `other`.
-- launchd `runtimeStatus`: `loaded`, `not-loaded`, or `unknown`.
-- Process groups use `kind: "process"` and include `projectPath`, `rootPids`, `instanceCount`, `members`, `cpuPercent`, `rssMiB`, `ports`, and `observedAt`.
-- Members include PID, PPID, start time, identity hash, working directory, resources and ports.
-
-New process fields omit raw commands; commands are used locally for identification and hashing. Existing launchd argument fields may still contain sensitive information. Log paths are included, not log contents. `processes.gaps` being empty does not imply exhaustive coverage.
-
-## Collection and limitations
-
-The board scans `~/Library/LaunchAgents/*.plist` and `/Library/LaunchDaemons/*.plist`, queries current-user `launchctl list`, and reads definition/log file times. It uses `ps` and batched `lsof` for processes and TCP listeners.
-
-- System-domain runtime is not independently queried; its definitions remain unverified.
-- XML text parsing does not fully support binary plists or every configuration form. Calendar schedules are not parsed for display. Unreadable/malformed definitions may be skipped.
-- Duplicate user/system labels are not yet independent task identities.
-- Runtime matching covers Node, Python, npm/npx, uv/uvicorn/gunicorn, nohup, PM2, tsx/Vite, Bun and Deno, plus descendants. It does not find every arbitrary executable, enter containers, or inspect remote hosts.
-- Current-user data only; other users' or system processes may be unavailable. Query gaps remain in JSON `processes.gaps` rather than a page banner; missing evidence is not treated as zero usage.
-- CPU is the `ps` average, with 100% corresponding to one core; group sums may exceed 100%. RSS sums may double-count shared pages and are not unique physical memory or energy use.
-- Ports are TCP LISTEN endpoints, not UDP sockets or network traffic. `—` means unavailable; `∅` means no TCP listener found in that query.
-- Project inference uses cwd, nearby Git roots/project markers, and recognizable static-server `--directory` arguments. Unmarked directories are hints, not verified project ownership.
-- Parent/child processes and same-project/tool instances are merged. Matched launchd trees enrich their original task instead of creating duplicate process rows.
-- Exited ordinary processes disappear from the next snapshot. Without history or registration, their expected lifetime cannot be reconstructed.
-- No resource sorting, push alerts, automatic cleanup, or measured energy savings.
-
-For launchd output staleness, the threshold is 2.5 times StartInterval with a 15-minute minimum, or 30 hours without an interval. Running KeepAlive tasks are not warned solely for quiet logs. Conditional KeepAlive still needs contextual verification.
-
-## Privacy and security
-
-There is no built-in telemetry or cloud upload. Local metadata includes hostnames, paths, notes, arguments and process identities. Do not expose the endpoint publicly or share raw snapshots.
-
-Submitting a draft or logs to an Agent is subject to your host and model provider's data handling. Task definitions, names, logs and scripts are untrusted evidence, not authorization to change the computer. See [SECURITY.md](SECURITY.md).
-
-## Development and verification
-
-With Node.js 22, no extra npm dependencies are needed for the current checks:
-
-```sh
-npm run check
-npm test
-```
-
-Tests cover parsing, ancestry merging, launchd deduplication, project/tool grouping, missing ports, identity changes, the two flat sections, state symbols and draft constraints. A macOS live test observes a temporary test-owned listener and cleans it up.
-
-DSH UI verification covers the two flat sections, language switching, state icons, TCP columns, menus and draft initialization. It does not prove that real repairs or disabling succeeded, nor any energy savings.
-
-Files: `index.js` launchd collection and JSON; `processes.js` process collection/grouping; `client.js` UI and handoff; `locale/` plugin metadata; `cordis.patch.yml` bundle registration; `tests/` focused checks.
-
-## Roadmap and feedback
-
-Priorities include domain-aware runtime, structured plist parsing, complete schedules, task history/alerts, resource sorting and more runtime signatures. Other Agent-host adapters are future work; this public package focuses on DSH.
-
-Report OS/DSH versions, steps, expected/actual behavior and sanitized examples. Do not attach raw live logs or credentials. See [CONTRIBUTING.md](CONTRIBUTING.md). No license grant has been selected yet; public visibility alone does not grant redistribution rights.
+No license has been selected. Public visibility alone does not grant redistribution rights.
