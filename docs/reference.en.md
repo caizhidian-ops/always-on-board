@@ -72,4 +72,3 @@ Tests cover parsing, ancestry merging, launchd deduplication, project/tool group
 DSH UI verification covers the two flat sections, language switching, state icons, TCP columns, menus and draft initialization. It does not prove that real repairs or disabling succeeded, nor any energy savings.
 
 Files: `index.js` launchd collection and JSON; `processes.js` process collection/grouping; `client.js` UI and handoff; `locale/` plugin metadata; `cordis.patch.yml` bundle registration; `tests/` focused checks.
-
