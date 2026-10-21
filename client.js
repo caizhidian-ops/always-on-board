@@ -32,6 +32,9 @@ window.__ModuleLoader__.load({
 
     const DICT = {
       zh: {
+        "detail.config": "配置",
+        "detail.project": "项目",
+
         "status.ok": "正常",
         "status.attention": "需处理",
         "status.idle": "待确认",
@@ -147,6 +150,9 @@ window.__ModuleLoader__.load({
         repair: '修复', disable: '停用', explain: '解释', details: '技术详情', fill: '让 Agent 补齐说明', close: '关闭', opening: '准备对话…', draftError: '未能准备对话，请重试。',
       },
       en: {
+        "detail.config": "Config",
+        "detail.project": "Project",
+
         "status.ok": "Normal",
         "status.attention": "Needs attention",
         "status.idle": "Unverified",
@@ -337,6 +343,12 @@ window.__ModuleLoader__.load({
     }
 
     const CSS = `
+      html body .dsh-ops-status-hint { position: fixed; z-index: 2147483647; box-sizing: border-box; padding: 8px 10px; border: 1px solid #d4d4d4; border-radius: 7px; color: #000 !important; background: #fff !important; font: 12px/1.5 system-ui; overflow-wrap: anywhere; pointer-events: none; box-shadow: 0 3px 12px #0002; }
+      html body .dsh-ops-detail-list { display: block !important; margin: 0; padding: 0; color: #000 !important; font: 13px/1.6 system-ui; }
+      html body .dsh-ops-detail-field { display: flex !important; align-items: baseline; gap: 16px; margin: 0 0 12px; }
+      html body .dsh-ops-detail-field dt { flex: 0 0 64px; margin: 0; white-space: nowrap; color: #000 !important; }
+      html body .dsh-ops-detail-field dd { flex: 1; min-width: 0; margin: 0; overflow-wrap: anywhere; white-space: pre-wrap; color: #000 !important; }
+
       .dsh-ops-root { --dsw-alias-label-primary: #000; --dsw-alias-label-secondary: #000; --dsw-alias-bg-layer-1: #fff; --dsw-alias-bg-layer-2: #f5f5f5; background: #fff; color: #000; }
       .dsh-ops-root *, .dsh-ops-menu *, .dsh-ops-modal * { color: #000 !important; }
       .dsh-ops-menu, .dsh-ops-modal { color: #000 !important; background: #fff !important; }
@@ -570,39 +582,20 @@ window.__ModuleLoader__.load({
           )
         }
 
-        function Detail(props) {
-          const t = props.t
-          const task = props.task
-          const described = describe(task, t)
-          const rows = []
-          const push = (label, value) => rows.push(
-            h('span', { key: `${label}-k` }, label),
-            h('span', { key: `${label}-v` }, h('code', null, value)),
-          )
-
-          push(t('notes.label'), described.text)
-          push(t('field.reason'), t(`reason.${task.reason}`))
-          push(t('field.location'), task.plistPath || '—')
-          push(t('field.management'), t(`management.${task.management || 'definition'}`))
-          if (task.kind === 'process') push(t('field.source'), t('source.unknown'))
-          push(t('field.purpose'), task.groupLabel || t(`category.${task.category || 'other'}`))
-          push(t('field.cwd'), task.projectPath || [...new Set((task.members || []).map(p=>p.cwd).filter(Boolean))].join(' · ') || '—')
-          push(t('col.resources'), task.cpuPercent == null ? '—' : `${task.cpuPercent}% / ${task.rssMiB} MiB`)
-          push(t('col.ports'), task.ports == null ? '—' : task.ports.join(', ') || '∅')
-          if (task.members) push(t('field.members'), task.members.map(p=>`${p.pid} / ${p.ppid} / ${p.startedAt} / ${p.program} / ${p.identity}`).join('\n'))
-          push(t('field.program'), [task.program, ...(task.args || [])].filter(Boolean).join(' ') || '—')
-          push(t('field.log'), task.stdoutPath || task.stderrPath || '—')
-          push(t('field.schedule'),
-            task.keepAlive
-              ? t('schedule.keepalive')
-              : task.interval
-                ? t('schedule.interval').replace('{n}', String(task.interval))
-                : t('schedule.manual'))
-          push(t('field.created'), absolute(task.createdAt))
-          push(t('field.pid'), task.pid ? String(task.pid) : '—')
-          push(t('field.exit'), typeof task.exitCode === 'number' ? String(task.exitCode) : '—')
-
-          return h('div', { className: 'dsh-ops-detail' }, rows)
+        function Detail({task,t}) {
+          const fields = [
+            [t('notes.label'), describe(task,t).text],
+            [t('field.reason'), shortState(task,t)],
+          ]
+          if (task.kind === 'process') {
+            const project=task.projectPath || task.members?.find(p=>p.cwd && p.cwd!=='/')?.cwd
+            if (project) fields.push([t('detail.project'),project])
+            fields.push([t('field.pid'),(task.rootPids || []).slice(0,6).join(', ') + ((task.rootPids?.length || 0)>6 ? ' …' : '')])
+          } else if (task.plistPath) fields.push([t('detail.config'),task.plistPath])
+          if (task.ports?.length) fields.push([t('col.ports'),task.ports.join(', ')])
+          return h('dl',{className:'dsh-ops-detail-list'},fields.map(([label,value])=>
+            h('div',{key:label,className:'dsh-ops-detail-field'},
+              h('dt',null,label),h('dd',null,String(value || '—').replace(/^\/Users\/[^/]+(?=\/|$)/,'~')))))
         }
 
         function taskPrompt(task, action, language='zh') {
@@ -750,7 +743,7 @@ window.__ModuleLoader__.load({
               h('span', { className: 'dsh-ops-name' }, h('span', { className: 'dsh-ops-name-text' }, task.title), task.scope === 'system' ? h('span', { className: 'dsh-ops-tag' }, t('scope.system')) : null),
               h('span', { className: `dsh-ops-what${described.source === 'derived' ? ' dsh-ops-what--derived' : ''}`, title: described.text }, described.text,
                 described.source === 'auto' ? h('span', { className: 'dsh-ops-tag', style: { marginLeft: 6 } }, t('tag.auto')) : null),
-              h('span', { className: 'dsh-ops-state', title: `${t(`status.${stateSymbol(task)}`)} · ${shortState(task,t)}`, 'aria-label': `${t(`status.${stateSymbol(task)}`)} · ${shortState(task,t)}`, tabIndex: 0 }, h(StateIcon,{task})),
+              h(StatusHint,{task,t}),
               h('span', {className:'dsh-ops-metric'}, task.ports == null ? '—' : task.ports.join(', ') || '∅'), h('span', { className: 'dsh-ops-updated' }, relative(t, task.lastUpdate))),
             busy ? h('div', { className: 'dsh-ops-foot', role: 'status' }, t('opening')) : null,
             error ? h('div', { className: 'dsh-ops-row-error', role: 'alert' }, error) : null,
@@ -769,6 +762,29 @@ window.__ModuleLoader__.load({
             h('circle',{cx:12,cy:12,r:9,...(kind==='idle'?{strokeDasharray:'3 4'}:{})}),
             kind==='ok' ? h('path',{d:'m8 12 2.5 2.5L16 9'}) : kind==='attention'
               ? h('path',{d:'M12 7.5v5M12 16.5h.01'}) : h('path',{d:'M9 12h6'}))
+        }
+
+        let statusHintSequence = 0
+        function StatusHint({task,t}) {
+          const [position,setPosition] = useState(null)
+          const id = useRef(null)
+          if (!id.current) id.current=`dsh-ops-hint-${++statusHintSequence}`
+          const label=`${t(`status.${stateSymbol(task)}`)} · ${shortState(task,t)}`
+          const show = event => {
+            const rect=event.currentTarget.getBoundingClientRect()
+            const width=Math.min(280,window.innerWidth-16)
+            setPosition({left:Math.max(8,Math.min(rect.left+rect.width/2-width/2,window.innerWidth-width-8)),top:Math.max(8,Math.min(rect.bottom+8,window.innerHeight-90)),width})
+          }
+          const hide = () => setPosition(null)
+          useEffect(()=>{
+            if (!position) return
+            window.addEventListener('scroll',hide,true)
+            window.addEventListener('resize',hide)
+            return ()=>{window.removeEventListener('scroll',hide,true);window.removeEventListener('resize',hide)}
+          },[position])
+          return h('span',{className:'dsh-ops-state','aria-label':label,'aria-describedby':position?id.current:undefined,tabIndex:0,
+            onMouseEnter:show,onMouseLeave:hide,onFocus:show,onBlur:hide,onKeyDown:event=>{if(event.key==='Escape'){event.stopPropagation();hide()}}},
+            h(StateIcon,{task}),position ? createPortal(h('div',{id:id.current,role:'tooltip',className:'dsh-ops-status-hint',style:position},label),document.body) : null)
         }
 
         function taskSections(rows) {

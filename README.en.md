@@ -18,7 +18,7 @@ Right-click actions prepare a new conversation draft. You review and send it; th
 
 - After an Agent creates a service: check visibility, status and purpose.
 - When a task might have failed: inspect exit codes, process presence and evidence.
-- When the computer feels busy: review active services and their ownership. CPU and RSS are available in details and JSON; neither is a direct energy measurement.
+- When the computer feels busy: review active services and their ownership. CPU and RSS are available in JSON; neither is a direct energy measurement.
 - When a project ends: ask an Agent to explain a task before deciding whether to disable it.
 
 There are no push notifications or task-history alerts yet. Keep DSH running for observation; the board refreshes every 15 seconds while subscribed.
@@ -62,7 +62,7 @@ The list has only two flat sections:
 
 There are no nested project, tool or management headings. Project paths, management status, purpose inference and source evidence remain in technical details and JSON. An unmatched process is not necessarily terminal-launched. Collection scope and the `management`, `category` and `runtimeStatus` evidence fields are unchanged.
 
-List text is black. CPU / RSS is omitted from the list and remains available in technical details and JSON. TCP listeners remain visible. Switch between **中文** and **English** at the top; the choice is saved locally and does not change DSH's language. User-authored notes and task names are not translated.
+List text is black. CPU / RSS is omitted from the list and remains available in JSON. TCP listeners remain visible. Switch between **中文** and **English** at the top; the choice is saved locally and does not change DSH's language. User-authored notes and task names are not translated.
 
 The list uses three consistent icons: a circled check for Normal, a circled exclamation for Needs attention, and a dashed circle for Unverified. Scheduled waiting is Normal; failures and warnings need attention; unloaded or unknown definitions are Unverified. Hover or open details for the exact reason. There is no persistent legend or nested section heading clutter.
 
