@@ -1,6 +1,6 @@
 {
   "name": "@local/dsh-ops-board",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "description": "Always-on Board: local background-task visibility and Agent intervention for AI coders using DeepSeek Harness.",
@@ -16,7 +16,8 @@
     "cordis.patch.yml",
     "locale/*.json",
     "icon.svg",
-    "README.md"
+    "README.md",
+    "processes.js"
   ],
   "dsh": {
     "bundle": {
@@ -34,7 +35,7 @@
   },
   "scripts": {
     "test": "node --test tests/*.test.mjs",
-    "check": "node --check index.js && node --check client.js"
+    "check": "node --check index.js && node --check processes.js && node --check client.js"
   },
   "repository": {
     "type": "git",

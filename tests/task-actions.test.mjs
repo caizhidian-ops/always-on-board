@@ -20,3 +20,11 @@ test('drafts stay short, identify the exact task and preserve other notes',()=>{
  assert.ok(prompt(task,'disable').includes('保留配置和数据'));
  assert.ok(prompt(task,'explain').includes('不修改'));
 });
+test('process actions carry fresh identity and scope checks instead of a fake plist',()=>{
+ const processTask={id:'process:fixture',kind:'process',category:'agent',title:'Blender MCP',observedAt:'2026-10-21T00:00:00Z',rootPids:[42],members:[{pid:42,ppid:12,startedAt:'Wed Oct 21 08:00:00 2026',identity:'identity-42',program:'uv'}],ports:['127.0.0.1:9000'],cpuPercent:1,rssMiB:50}
+ for(const action of ['repair','disable','explain']){
+  const text=prompt(processTask,action);assert.ok(text.includes('identity-42'));assert.ok(text.includes(processTask.observedAt));assert.ok(text.includes('PID 复用'));assert.ok(text.includes('不要停止整个 IDE'));assert.ok(!text.includes('配置：null'))
+ }
+ assert.ok(!menuLabels(processTask).includes('fill'))
+ assert.ok(prompt(processTask,'explain').includes('只查看，不修改'))
+})

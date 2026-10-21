@@ -7,6 +7,7 @@
  *
  * Nothing here writes, starts, stops or restarts a job: the board only reports.
  */
+import {collectProcesses} from './processes.js'
 import { execFile } from 'node:child_process'
 import { promisify } from 'node:util'
 import { mkdir, readdir, readFile, stat, writeFile } from 'node:fs/promises'
@@ -298,6 +299,7 @@ async function collect() {
     }
   }
 
+  const processes = await collectProcesses(tasks)
   const { notes, meta: notesMeta } = await readNotes(tasks)
   for (const task of tasks) {
     const value = notes[task.id]
@@ -305,6 +307,7 @@ async function collect() {
     task.autoNote = typeof auto[task.id] === 'string' && auto[task.id].trim() ? auto[task.id] : null
   }
 
+  tasks.push(...processes.tasks)
   const rank = { fail: 0, warn: 1, idle: 2, ok: 3 }
   tasks.sort((left, right) => {
     const delta = (rank[left.state] ?? 9) - (rank[right.state] ?? 9)
@@ -317,7 +320,8 @@ async function collect() {
   return {
     generatedAt: new Date(now).toISOString(),
     host: hostname(),
-    sources: SOURCES.map(source => shortenPath(source.dir)),
+    sources: [...SOURCES.map(source => shortenPath(source.dir)), 'current-user processes (ps + lsof)'],
+    processes: {observedAt: processes.observedAt, gaps: processes.gaps, metrics: processes.metrics},
     summary,
     notes: notesMeta,
     tasks,
