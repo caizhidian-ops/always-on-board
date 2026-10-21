@@ -750,7 +750,7 @@ window.__ModuleLoader__.load({
               h('span', { className: 'dsh-ops-name' }, h('span', { className: 'dsh-ops-name-text' }, task.title), task.scope === 'system' ? h('span', { className: 'dsh-ops-tag' }, t('scope.system')) : null),
               h('span', { className: `dsh-ops-what${described.source === 'derived' ? ' dsh-ops-what--derived' : ''}`, title: described.text }, described.text,
                 described.source === 'auto' ? h('span', { className: 'dsh-ops-tag', style: { marginLeft: 6 } }, t('tag.auto')) : null),
-              h('span', { className: 'dsh-ops-state', title: shortState(task,t), 'aria-label': shortState(task,t) }, h(StateIcon,{task})),
+              h('span', { className: 'dsh-ops-state', title: `${t(`status.${stateSymbol(task)}`)} · ${shortState(task,t)}`, 'aria-label': `${t(`status.${stateSymbol(task)}`)} · ${shortState(task,t)}`, tabIndex: 0 }, h(StateIcon,{task})),
               h('span', {className:'dsh-ops-metric'}, task.ports == null ? '—' : task.ports.join(', ') || '∅'), h('span', { className: 'dsh-ops-updated' }, relative(t, task.lastUpdate))),
             busy ? h('div', { className: 'dsh-ops-foot', role: 'status' }, t('opening')) : null,
             error ? h('div', { className: 'dsh-ops-row-error', role: 'alert' }, error) : null,
@@ -834,7 +834,6 @@ window.__ModuleLoader__.load({
               ? h('div', { className: 'dsh-ops-note' },
                 `${t('error')}: ${snapshot.error}${snapshot.status === 'stale' ? t('stale') : ''}`)
               : null,
-            data?.processes?.gaps?.length ? h('p', {className:'dsh-ops-note',role:'status'}, `${t('process.gaps')}: ${data.processes.gaps.join(' · ')}`) : null,
             h('div', { className: 'dsh-ops-table' },
               h('div', { className: 'dsh-ops-thead' },
                 h('span', null, t('col.name')),

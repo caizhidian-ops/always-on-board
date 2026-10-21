@@ -124,7 +124,7 @@ The board scans `~/Library/LaunchAgents/*.plist` and `/Library/LaunchDaemons/*.p
 - XML text parsing does not fully support binary plists or every configuration form. Calendar schedules are not parsed for display. Unreadable/malformed definitions may be skipped.
 - Duplicate user/system labels are not yet independent task identities.
 - Runtime matching covers Node, Python, npm/npx, uv/uvicorn/gunicorn, nohup, PM2, tsx/Vite, Bun and Deno, plus descendants. It does not find every arbitrary executable, enter containers, or inspect remote hosts.
-- Current-user data only; other users' or system processes may be unavailable. Query failures are reported rather than treated as zero usage.
+- Current-user data only; other users' or system processes may be unavailable. Query gaps remain in JSON `processes.gaps` rather than a page banner; missing evidence is not treated as zero usage.
 - CPU is the `ps` average, with 100% corresponding to one core; group sums may exceed 100%. RSS sums may double-count shared pages and are not unique physical memory or energy use.
 - Ports are TCP LISTEN endpoints, not UDP sockets or network traffic. `—` means unavailable; `∅` means no TCP listener found in that query.
 - Project inference uses cwd, nearby Git roots/project markers, and recognizable static-server `--directory` arguments. Unmarked directories are hints, not verified project ownership.
