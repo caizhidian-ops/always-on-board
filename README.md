@@ -36,6 +36,36 @@ Always-on Board 把常驻任务和运行进程放在一起，让你看状态、�
 
 需要 **macOS + DeepSeek Harness（DSH）**，宿主须支持本地 bundle、侧边栏和会话草稿接口。已在 DSH `0.2.1-rc.2` 验证相关 UI，最低兼容版本尚未建立。
 
+### CLI 安装到 Web profile
+
+已安装 DSH CLI 的用户可以在终端执行：
+
+```sh
+dsh plugin --profile web add "github:caizhidian-ops/always-on-board"
+```
+
+安装完成后启动 `dsh web`；如果 Web profile 已在运行，保存当前工作并重新启动该实例，再从侧边栏打开 **Always-on Board**。
+
+如需固定经过验证的源码版本：
+
+```sh
+dsh plugin --profile web add "github:caizhidian-ops/always-on-board#8c4246eb75bbc4b2e6b723d81c4b5c65da7324bc"
+```
+
+两条命令已在 macOS、Node.js 22、DSH `0.2.1-rc.2` 的独立临时 `DSH_HOME` 中验证：下载和安装成功、bundle 自动加入 Web profile、配置合成包含 `ops-board`，宿主模块可加载。此项验证不包含从该临时配置重新进行 UI 或模型调用验收，详见[安装验证记录](docs/cli-install-verification.md)。
+
+`web` 是安装目标 profile。CLI 的 `desktop` profile 由桌面应用管理，不能直接把命令里的 `web` 换成 `desktop`；桌面用户可使用下方本地 bundle 方式。无需发布到 npm，也无需为这个直接运行 JavaScript 的插件添加构建脚本。
+
+卸载 Web profile 中的插件：
+
+```sh
+dsh plugin --profile web remove @local/dsh-ops-board
+```
+
+该命令中的内部包名保留旧标识。卸载看板不会停止其观察的任务；本地用途说明也不会随之删除。
+
+### 本地 bundle 安装
+
 ```sh
 git clone https://github.com/caizhidian-ops/always-on-board.git
 cd always-on-board

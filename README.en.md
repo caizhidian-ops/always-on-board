@@ -36,6 +36,36 @@ The board prepares a draft; **you review and send it**. Subsequent actions follo
 
 Requires **macOS + DeepSeek Harness (DSH)** with local bundles, sidebar slots and conversation draft APIs. Related UI flows were checked on DSH `0.2.1-rc.2`; a minimum supported version has not been established.
 
+### CLI installation into the Web profile
+
+With the DSH CLI installed, run:
+
+```sh
+dsh plugin --profile web add "github:caizhidian-ops/always-on-board"
+```
+
+Then start `dsh web`. If that Web profile is already running, save your work and restart that instance before opening **Always-on Board** in the sidebar.
+
+To pin the source revision verified during installation:
+
+```sh
+dsh plugin --profile web add "github:caizhidian-ops/always-on-board#8c4246eb75bbc4b2e6b723d81c4b5c65da7324bc"
+```
+
+Both commands were checked on macOS with Node.js 22 and DSH `0.2.1-rc.2`, using separate temporary `DSH_HOME` directories. Download and installation succeeded, the bundle was added to the Web profile, the composed configuration included `ops-board`, and the host module loaded. This check did not repeat UI acceptance or make model calls from those temporary profiles. See the [installation verification record](docs/cli-install-verification.md).
+
+`web` is the target profile. The CLI reserves `desktop` for the desktop application, so do not substitute `desktop` in these commands; desktop users can use the local bundle route below. npm publication and a build script are not required for this plugin's directly executable JavaScript files.
+
+To remove the plugin from the Web profile:
+
+```sh
+dsh plugin --profile web remove @local/dsh-ops-board
+```
+
+The internal package name retains the previous identifier. Removing the board does not stop the tasks it observes or delete the local purpose notes.
+
+### Local bundle installation
+
 ```sh
 git clone https://github.com/caizhidian-ops/always-on-board.git
 cd always-on-board
