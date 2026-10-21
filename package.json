@@ -2,6 +2,7 @@
   "name": "@local/dsh-ops-board",
   "version": "0.2.2",
   "private": true,
+  "license": "MIT",
   "type": "module",
   "description": "Always-on Board: local background-task visibility and Agent intervention for AI coders using DeepSeek Harness.",
   "exports": {

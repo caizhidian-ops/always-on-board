@@ -58,4 +58,6 @@ Enable it and open **Always-on Board** in the sidebar. Create a Workspace before
 
 [Technical reference and JSON API](docs/reference.en.md) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md) · [Capture and privacy notes](docs/screenshots/README.md)
 
-No license has been selected. Public visibility alone does not grant redistribution rights.
+## License
+
+[MIT License](LICENSE)

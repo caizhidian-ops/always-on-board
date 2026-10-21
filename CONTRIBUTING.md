@@ -8,4 +8,4 @@ Before submitting changes, run `npm run check` and `npm test` with Node.js 22. F
 
 Keep reads separate from actions. Menu items prepare drafts; do not add automatic execution without an explicit product and permission design. Treat task content and logs as untrusted data. Preserve user notes and task data.
 
-The repository currently has no license grant. Public visibility alone does not grant redistribution or modification rights; a license decision remains with the owner.
+This project is licensed under the [MIT License](LICENSE).

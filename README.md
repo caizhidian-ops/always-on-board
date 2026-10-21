@@ -58,4 +58,6 @@ install_bundle target=/absolute/path/to/always-on-board
 
 [技术参考与 JSON 接口](docs/reference.zh.md) · [开发与贡献](CONTRIBUTING.md) · [安全说明](SECURITY.md) · [截图生成与脱敏](docs/screenshots/README.md)
 
-仓库尚未选定许可证，公开可见不等于已授予再分发许可。
+## 许可
+
+[MIT License](LICENSE)
