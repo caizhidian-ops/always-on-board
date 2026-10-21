@@ -32,6 +32,16 @@ window.__ModuleLoader__.load({
 
     const DICT = {
       zh: {
+        "status.ok": "正常",
+        "status.attention": "需处理",
+        "status.idle": "待确认",
+
+        "section.persistent": "常驻任务",
+        "section.processes": "运行进程",
+        "section.persistentHint": "已配置的后台任务，包含常驻、定时，以及未加载或待确认的配置",
+        "section.processesHint": "当前观测到、未合并到已配置任务的进程；同组实例及子进程合并显示",
+        "process.summary": "{instances} 个实例 · {processes} 个进程",
+
         "field.purpose": "用途分组（按目录或工具规则推断）",
         "state.legend": "✓ 已观测运行　◷ 等待调度　! 需检查　? 待确认　— 未加载",
         "group.summary": "组 / 任务行",
@@ -137,6 +147,16 @@ window.__ModuleLoader__.load({
         repair: '修复', disable: '停用', explain: '解释', details: '技术详情', fill: '让 Agent 补齐说明', close: '关闭', opening: '准备对话…', draftError: '未能准备对话，请重试。',
       },
       en: {
+        "status.ok": "Normal",
+        "status.attention": "Needs attention",
+        "status.idle": "Unverified",
+
+        "section.persistent": "Persistent tasks",
+        "section.processes": "Running processes",
+        "section.persistentHint": "Configured background jobs, including scheduled, unloaded and unverified definitions",
+        "section.processesHint": "Observed processes not merged into configured tasks; instances and descendants are combined",
+        "process.summary": "{instances} instances · {processes} processes",
+
         "field.purpose": "Purpose grouping (directory / tool heuristic)",
         "state.legend": "✓ Process observed　◷ Waiting　! Check required　? Unverified　— Not loaded",
         "group.summary": "groups / task rows",
@@ -366,7 +386,7 @@ window.__ModuleLoader__.load({
       .dsh-ops-table { border: 1px solid var(--dsw-alias-border-l1); border-radius: 10px;
         overflow: auto; background: var(--dsw-alias-bg-layer-1); }
       .dsh-ops-thead, .dsh-ops-row { display: grid; gap: 12px; align-items: center;
-        grid-template-columns: 10px minmax(150px, 200px) minmax(180px, 1fr) 65px minmax(120px, 190px) 84px; min-width: 850px; }
+        grid-template-columns: minmax(150px, 220px) minmax(180px, 1fr) 65px minmax(120px, 190px) 84px; min-width: 820px; }
       .dsh-ops-section { padding: 10px 14px; margin: 0; font-size: 12px; background: var(--dsw-alias-bg-layer-2); }
       .dsh-ops-metric { font-size: 11px; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
       .dsh-ops-thead { padding: 8px 14px; font-size: 11px; text-transform: uppercase;
@@ -484,7 +504,7 @@ window.__ModuleLoader__.load({
         function describe(task, t) {
           if (task.note) return { text: task.note, source: 'manual' }
           if (task.autoNote) return { text: task.autoNote, source: 'auto' }
-          if (task.kind === 'process') return {text: `${task.rootPids.length} / ${task.members.length} ${t('process.instances')} · ${task.projectPath || task.groupLabel}`, source: 'derived'}
+          if (task.kind === 'process') return {text: t('process.summary').replace('{instances}',task.rootPids.length).replace('{processes}',task.members.length), source: 'derived'}
           const program = baseName(task.program)
           if (!program) return { text: '—', source: 'derived' }
           if (task.keepAlive) return { text: t('derived.keepalive').replace('{p}', program), source: 'derived' }
@@ -545,10 +565,6 @@ window.__ModuleLoader__.load({
               'aria-pressed': props.active,
               onClick: () => props.onSelect(props.state),
             },
-            h('span', {
-              className: `dsh-ops-swatch${props.state === 'warn' ? ' dsh-ops-swatch--warn' : ''}`,
-              style: props.state === 'all' ? { background: 'var(--dsw-alias-label-secondary)' } : { background: COLORS[props.state] },
-            }),
             props.label,
             h('b', null, String(props.value || 0)),
           )
@@ -731,11 +747,10 @@ window.__ModuleLoader__.load({
             h('div', { ref: row, className: 'dsh-ops-row', role: 'group', tabIndex: 0, 'aria-label': `${task.title} ${t('row.menu')}`, 'aria-haspopup': 'menu', 'aria-busy': busy,
               onContextMenu: openMenu, onKeyDown: event => { if (event.key === 'ContextMenu' || (event.shiftKey && event.key === 'F10')) { event.preventDefault(); const r = row.current.getBoundingClientRect(); setMenu({ x: r.left + 24, y: r.top + r.height }) } },
             },
-              h('span', { className: `dsh-ops-dot${task.state === 'warn' ? ' dsh-ops-dot--warn' : ''}`, style: { background: COLORS[task.state] } }),
               h('span', { className: 'dsh-ops-name' }, h('span', { className: 'dsh-ops-name-text' }, task.title), task.scope === 'system' ? h('span', { className: 'dsh-ops-tag' }, t('scope.system')) : null),
               h('span', { className: `dsh-ops-what${described.source === 'derived' ? ' dsh-ops-what--derived' : ''}`, title: described.text }, described.text,
                 described.source === 'auto' ? h('span', { className: 'dsh-ops-tag', style: { marginLeft: 6 } }, t('tag.auto')) : null),
-              h('span', { className: 'dsh-ops-state', title: shortState(task,t), 'aria-label': shortState(task,t) }, stateSymbol(task)),
+              h('span', { className: 'dsh-ops-state', title: shortState(task,t), 'aria-label': shortState(task,t) }, h(StateIcon,{task})),
               h('span', {className:'dsh-ops-metric'}, task.ports == null ? '—' : task.ports.join(', ') || '∅'), h('span', { className: 'dsh-ops-updated' }, relative(t, task.lastUpdate))),
             busy ? h('div', { className: 'dsh-ops-foot', role: 'status' }, t('opening')) : null,
             error ? h('div', { className: 'dsh-ops-row-error', role: 'alert' }, error) : null,
@@ -744,26 +759,22 @@ window.__ModuleLoader__.load({
         }
 
         function stateSymbol(task) {
-          if (task.reason === 'not-loaded') return '—'
-          if (task.reason === 'runtime-unknown' || task.state === 'idle') return '?'
-          if (task.state === 'fail' || task.state === 'warn') return '!'
-          return task.running ? '✓' : '◷'
+          if (task.state === 'fail' || task.state === 'warn') return 'attention'
+          return task.state === 'idle' ? 'idle' : 'ok'
+        }
+
+        function StateIcon({ task }) {
+          const kind=stateSymbol(task)
+          return h('svg', {width:18,height:18,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:1.7,strokeLinecap:'round',strokeLinejoin:'round','aria-hidden':true},
+            h('circle',{cx:12,cy:12,r:9,...(kind==='idle'?{strokeDasharray:'3 4'}:{})}),
+            kind==='ok' ? h('path',{d:'m8 12 2.5 2.5L16 9'}) : kind==='attention'
+              ? h('path',{d:'M12 7.5v5M12 16.5h.01'}) : h('path',{d:'M9 12h6'}))
         }
 
         function taskSections(rows) {
-          return ['launchd','unassociated','definition'].flatMap(management=>{
-            const members=rows.filter(task=>(task.management || (task.kind==='process'?'unassociated':'definition'))===management)
-            if (!members.length) return []
-            const groups=new Map()
-            for (const task of members) {
-              const category=task.category || 'other'
-              const projectPath=category==='project'?task.projectPath:null
-              const key=`${category}:${projectPath || ''}`
-              if(!groups.has(key))groups.set(key,{key,category,projectPath,rows:[]})
-              groups.get(key).rows.push(task)
-            }
-            const rank={project:0,agent:1,other:2}
-            return [{management,rows:members,groups:[...groups.values()].sort((a,b)=>rank[a.category]-rank[b.category] || (a.projectPath || '').localeCompare(b.projectPath || ''))}]
+          return ['persistent','processes'].flatMap(key=>{
+            const members=rows.filter(task=>(task.kind==='process'?'processes':'persistent')===key)
+            return members.length ? [{key,rows:members}] : []
           })
         }
 
@@ -787,13 +798,10 @@ window.__ModuleLoader__.load({
                 : t('notes.unreadable')
             : null
 
-          const rows = filter === 'all' ? all : all.filter(task=>task.state===filter)
+          const rows = filter === 'all' ? all : all.filter(task=>stateSymbol(task)===filter)
           const filters = [
-            { state: 'all', label: t('filter.all'), value: summary.total },
-            { state: 'fail', label: t('filter.fail'), value: summary.fail },
-            { state: 'warn', label: t('filter.warn'), value: summary.warn },
-            { state: 'ok', label: t('filter.ok'), value: summary.ok },
-            { state: 'idle', label: t('filter.idle'), value: summary.idle },
+            {state:'all',label:t('filter.all'),value:all.length},
+            ...['ok','attention','idle'].map(state=>({state,label:t(`status.${state}`),value:all.filter(task=>stateSymbol(task)===state).length}))
           ]
 
           return h(
@@ -826,11 +834,9 @@ window.__ModuleLoader__.load({
               ? h('div', { className: 'dsh-ops-note' },
                 `${t('error')}: ${snapshot.error}${snapshot.status === 'stale' ? t('stale') : ''}`)
               : null,
-            h('p', {className:'dsh-ops-foot'}, t('state.legend')),
             data?.processes?.gaps?.length ? h('p', {className:'dsh-ops-note',role:'status'}, `${t('process.gaps')}: ${data.processes.gaps.join(' · ')}`) : null,
             h('div', { className: 'dsh-ops-table' },
               h('div', { className: 'dsh-ops-thead' },
-                h('span', null, ''),
                 h('span', null, t('col.name')),
                 h('span', null, t('col.what')),
                 h('span', null, t('col.state')),
@@ -838,11 +844,8 @@ window.__ModuleLoader__.load({
                 h('span', null, t('col.updated'))),
               rows.length
                 ? taskSections(rows).flatMap(section => [
-                  h('h2',{className:'dsh-ops-section',key:section.management},`${t(`management.${section.management}`)} · ${section.rows.length}`),
-                  ...section.groups.flatMap(group=>[
-                    h('h3',{className:'dsh-ops-purpose',key:group.key},`${t(`category.${group.category}`)}${group.projectPath ? ` · ${group.projectPath}` : ''} · ${group.rows.length}`),
-                    ...group.rows.map(task=>h(TaskRow,{key:task.id,task,t}))
-                  ])
+                  h('h2',{className:'dsh-ops-section',key:section.key,title:t(`section.${section.key}Hint`)},`${t(`section.${section.key}`)} · ${section.rows.length}`),
+                  ...section.rows.map(task=>h(TaskRow,{key:task.id,task,t}))
                 ])
                 : h('div', { className: 'dsh-ops-empty' },
                     snapshot.status === 'loading'

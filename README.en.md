@@ -53,27 +53,20 @@ Uninstalling the bundle removes the board, not the jobs it observes or your purp
 
 ## Read the board
 
-The outer partition is **management**, and inner groups are **project directories, Agent tools, or other tasks**:
+The list has only two flat sections:
 
-| Management section | Meaning |
+| Section | Meaning |
 | --- | --- |
-| launchd — loaded | Registration observed in the current user's launchd domain; may be running or waiting |
-| Not linked to a known manager | Developer processes observed without a match to the scanned jobs; does not prove terminal origin |
-| launchd definitions — not loaded / unverified | Configuration exists but is not loaded in the queried user domain, or runtime remains unknown |
+| Persistent tasks | Configured background jobs, including scheduled, unloaded and unverified launchd definitions; not every item has a live process |
+| Running processes | Observed developer processes and Agent tools not merged into the configured jobs; instances and descendants are combined |
 
-The same project can appear under different management sections. Project and tool names are heuristics based on paths and commands, not proof of who created them. Definitions remain visible in their management section rather than disappearing into a global idle bucket.
+There are no nested project, tool or management headings. Project paths, management status, purpose inference and source evidence remain in technical details and JSON. An unmatched process is not necessarily terminal-launched. Collection scope and the `management`, `category` and `runtimeStatus` evidence fields are unchanged.
 
 List text is black. CPU / RSS is omitted from the list and remains available in technical details and JSON. TCP listeners remain visible. Switch between **中文** and **English** at the top; the choice is saved locally and does not change DSH's language. User-authored notes and task names are not translated.
 
-| State symbol | Meaning |
-| --- | --- |
-| ✓ | Process observed; business health unverified |
-| ◷ | Waiting for the next scheduled run |
-| ! | Requires investigation: failure, missing expected process, or stale output |
-| ? | Runtime not verified |
-| — | Definition exists but is not loaded in the queried user domain |
+The list uses three consistent icons: a circled check for Normal, a circled exclamation for Needs attention, and a dashed circle for Unverified. Scheduled waiting is Normal; failures and warnings need attention; unloaded or unknown definitions are Unverified. Hover or open details for the exact reason. There is no persistent legend or nested section heading clutter.
 
-Hover or use assistive technology for the full state text. Unloaded or unverified definitions are not failures solely because of KeepAlive or an old exit code.
+Unloaded or unverified definitions are not failures solely because of KeepAlive or an old exit code.
 
 ## Agent actions
 
@@ -156,9 +149,9 @@ npm run check
 npm test
 ```
 
-Tests cover parsing, ancestry merging, launchd deduplication, project/tool grouping, missing ports, identity changes, management partitions, state symbols and draft constraints. A macOS live test observes a temporary test-owned listener and cleans it up.
+Tests cover parsing, ancestry merging, launchd deduplication, project/tool grouping, missing ports, identity changes, the two flat sections, state symbols and draft constraints. A macOS live test observes a temporary test-owned listener and cleans it up.
 
-DSH UI verification covers management sections, inner groups, language switching, symbol states, TCP columns, menus and draft initialization. It does not prove that real repairs or disabling succeeded, nor any energy savings.
+DSH UI verification covers the two flat sections, language switching, state icons, TCP columns, menus and draft initialization. It does not prove that real repairs or disabling succeeded, nor any energy savings.
 
 Files: `index.js` launchd collection and JSON; `processes.js` process collection/grouping; `client.js` UI and handoff; `locale/` plugin metadata; `cordis.patch.yml` bundle registration; `tests/` focused checks.
 
