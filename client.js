@@ -25,6 +25,28 @@ window.__ModuleLoader__.load({
       zh: {
         'col.resources': 'CPU / RSS', "col.ports": "监听端口", "category.launchd": "launchd 任务", "category.project": "项目进程", "category.agent": "Agent 工具", "category.other": "来源待确认", "process.observed": "进程已观测 · 业务未验证", "process.instances": "实例 / 进程", "field.cwd": "工作目录 / 项目", "field.members": "成员身份（PID / PPID / 启动时间）", "process.gaps": "进程证据缺口", "resources.hint": "CPU 为 ps 平均值（单核 100%）；RSS 为成员合计，可能重复计算共享页；仅展示 TCP 监听端口。",
         title: 'Always-on Board',
+        "help": "使用方法",
+        "boardInfo": "数据与说明",
+        "infoAttention": "数据与说明 · 需检查",
+        "help.intro": "找到任务，右键选择你想做的事。",
+        "help.actions": "修复、停用或解释：进入独立会话，填好文案，由你编辑并发送。",
+        "help.details": "技术详情：在弹窗中查看配置、日志路径和运行信息。",
+        "help.fill": "用途说明为空时，菜单会出现“让 Agent 补齐说明”。",
+        "help.keyboard": "键盘操作：选中任务后按 Shift+F10 打开菜单，Esc 关闭。",
+        "info.machine": "机器",
+        "info.snapshot": "采集时间",
+        "info.refresh": "自动刷新",
+        "info.interval": "每 15 秒；也可以手动刷新。",
+        "info.sources": "扫描目录",
+        "info.notesTitle": "任务用途说明",
+        "info.manual": "手动填写",
+        "info.manualValue": "{n} 条",
+        "info.file": "说明文件",
+        "info.explanation": "列表优先显示你写的说明，其次是自动推断，最后是按配置生成的简述。",
+        "info.updated": "表格里的“更新”指日志最后写入时间，不代表任务成功时间。",
+        "info.scope": "目前只扫描本机 launchd 任务；进程存在不等于业务成功。",
+        "info.unavailable": "暂无数据",
+
         refresh: '刷新',
         generated: '更新于',
         loading: '正在读取任务和本机进程…',
@@ -93,6 +115,28 @@ window.__ModuleLoader__.load({
       en: {
         'col.resources': 'CPU / RSS', "col.ports": "TCP listeners", "category.launchd": "launchd tasks", "category.project": "Project processes", "category.agent": "Agent tools", "category.other": "Unattributed", "process.observed": "Observed · health unverified", "process.instances": "instances / processes", "field.cwd": "Working directory / project", "field.members": "Member identity (PID / PPID / start)", "process.gaps": "Process evidence gaps", "resources.hint": "CPU: ps average (100% = one core); RSS: member sum, shared pages may be counted twice. TCP listeners only.",
         title: 'Always-on Board',
+        "help": "How to use",
+        "boardInfo": "Data & descriptions",
+        "infoAttention": "Data & descriptions · Check needed",
+        "help.intro": "Find a task and right-click to choose an action.",
+        "help.actions": "Repair, disable or explain: open a separate chat with a draft for you to review and send.",
+        "help.details": "Technical details: view configuration, log paths and runtime information in a dialog.",
+        "help.fill": "Tasks without a description also offer “让 Agent 补齐说明”.",
+        "help.keyboard": "Keyboard: focus a task and press Shift+F10. Press Esc to close.",
+        "info.machine": "Machine",
+        "info.snapshot": "Collected at",
+        "info.refresh": "Auto-refresh",
+        "info.interval": "Every 15 seconds; manual refresh is also available.",
+        "info.sources": "Scanned folders",
+        "info.notesTitle": "Task descriptions",
+        "info.manual": "Written by you",
+        "info.manualValue": "{n} descriptions",
+        "info.file": "Description file",
+        "info.explanation": "Your descriptions take priority, followed by automatic explanations, then a short summary derived from configuration.",
+        "info.updated": "“Updated” is the last log write time, not proof of a successful run.",
+        "info.scope": "Only local launchd definitions are scanned. A running process does not prove business success.",
+        "info.unavailable": "Not available yet",
+
         refresh: 'Refresh',
         generated: 'updated',
         loading: 'Reading tasks and processes…',
@@ -236,7 +280,7 @@ window.__ModuleLoader__.load({
     const CSS = `
       .dsh-ops-root { height: 100%; overflow: auto; padding: 24px 28px 64px; box-sizing: border-box;
         color: var(--dsw-alias-label-primary); }
-      .dsh-ops-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+      .dsh-ops-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; }
       .dsh-ops-head h1 { margin: 0 0 4px; font-size: 18px; font-weight: 600; letter-spacing: .01em; }
       .dsh-ops-sub { margin: 0; font-size: 12px; color: var(--dsw-alias-label-secondary); }
       .dsh-ops-refresh { flex: none; height: 28px; padding: 0 12px; border-radius: 7px; cursor: pointer;
@@ -244,7 +288,7 @@ window.__ModuleLoader__.load({
         color: var(--dsw-alias-label-primary); font-size: 12px; font-family: inherit; }
       .dsh-ops-refresh:hover { background: var(--dsw-alias-bg-layer-2); }
 
-      .dsh-ops-filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 10px; }
+      .dsh-ops-filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 18px; }
       .dsh-ops-filter { display: inline-flex; align-items: center; gap: 6px; font-size: 12px;
         padding: 4px 12px; border-radius: 999px; cursor: pointer; font-family: inherit;
         border: 1px solid var(--dsw-alias-border-l1); background: transparent;
@@ -256,9 +300,22 @@ window.__ModuleLoader__.load({
       .dsh-ops-swatch { width: 8px; height: 8px; border-radius: 50%; flex: none; }
       .dsh-ops-swatch--warn { background: #eab308 !important; }
 
-      .dsh-ops-notes { margin: 0 0 14px; font-size: 11px; color: var(--dsw-alias-label-secondary); }
-      .dsh-ops-notes.is-warn { color: #eab308; }
-
+      .dsh-ops-head-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+      .dsh-ops-help-button { border: 0; background: transparent; color: var(--dsw-alias-label-secondary); cursor: pointer; font: inherit; font-size: 12px; padding: 6px 8px; border-radius: 6px; }
+      .dsh-ops-help-button:hover { background: var(--dsw-alias-bg-layer-2); color: var(--dsw-alias-label-primary); }
+      .dsh-ops-help-button.is-warn { color: #b36b00; }
+      .dsh-ops-help-button:focus-visible { outline: 2px solid #eab308; outline-offset: 2px; }
+      .dsh-ops-info { font: 13px/1.65 system-ui; }
+      .dsh-ops-info p { margin: 0 0 14px; }
+      .dsh-ops-info ol { margin: 0 0 16px; padding-left: 22px; }
+      .dsh-ops-info li { padding: 0 0 10px 4px; }
+      .dsh-ops-info dl { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 10px 18px; margin: 0 0 18px; }
+      .dsh-ops-info dt { color: #5f6368; }
+      .dsh-ops-info dd { margin: 0; overflow-wrap: anywhere; }
+      .dsh-ops-info h3 { font-size: 14px; border-top: 1px solid #e0e2e5; padding-top: 18px; margin: 18px 0 12px; }
+      .dsh-ops-info code { font-size: 12px; }
+      .dsh-ops-info .is-muted { color: #5f6368; }
+      .dsh-ops-info .is-warn { color: #a45b00; }
       .dsh-ops-table { border: 1px solid var(--dsw-alias-border-l1); border-radius: 10px;
         overflow: auto; background: var(--dsw-alias-bg-layer-1); }
       .dsh-ops-thead, .dsh-ops-row { display: grid; gap: 12px; align-items: center;
@@ -283,6 +340,22 @@ window.__ModuleLoader__.load({
       .dsh-ops-modal h2 { font: 600 16px system-ui; margin: 0; overflow-wrap: anywhere; }
       .dsh-ops-modal .dsh-ops-detail { padding: 0; }
       .dsh-ops-modal button { color: inherit; background: transparent; border: 1px solid #8886; border-radius: 6px; padding: 6px 12px; cursor: pointer; }
+      /* Popovers are reading surfaces: do not inherit wallpaper glass tokens. */
+      html body .dsh-ops-menu, html body dialog.dsh-ops-modal {
+        background: #fff !important; color: #202124 !important;
+        opacity: 1 !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+        filter: none !important; mix-blend-mode: normal !important;
+        border: 1px solid #d5d7da !important; box-shadow: 0 12px 36px #0003 !important;
+      }
+      html body .dsh-ops-menu button, html body .dsh-ops-modal button {
+        color: #202124 !important; opacity: 1 !important; background: #fff !important;
+      }
+      html body .dsh-ops-menu button:hover, html body .dsh-ops-menu button:focus-visible,
+      html body .dsh-ops-modal button:hover { background: #eef0f3 !important; }
+      html body .dsh-ops-menu hr { border-top-color: #d5d7da !important; }
+      html body .dsh-ops-modal .dsh-ops-detail { color: #5f6368 !important; }
+      html body .dsh-ops-modal .dsh-ops-detail code { color: #202124 !important; }
+      html body .dsh-ops-modal::backdrop { background: #0006 !important; backdrop-filter: none !important; }
       .dsh-ops-row:focus-visible { outline: 2px solid #eab308; outline-offset: -2px; }
       .dsh-ops-row-error { padding: 0 14px 8px; color: var(--dsw-alias-state-error-primary); font-size: 12px; }
       .dsh-ops-li + .dsh-ops-li { border-top: 1px solid var(--dsw-alias-border-l1); }
@@ -397,28 +470,22 @@ window.__ModuleLoader__.load({
           return null
         }
 
-        function TrafficLightIcon(props) {
+        function AlwaysOnIcon(props) {
           const size = (props && props.size) || 20
-          const active = !!(props && props.active)
           const snapshot = useSyncExternalStore(subscribe, getSnapshot)
           const worst = worstOf(snapshot.data)
-          const lamp = color => (worst === null || worst === color ? 1 : 0.22)
-          return h(
-            'svg',
-            {
-              width: size,
-              height: size,
-              viewBox: '0 0 24 24',
-              'aria-hidden': true,
-              style: { display: 'block', opacity: active ? 1 : 0.82 },
-            },
-            h('rect', {
-              x: 7.25, y: 2.25, width: 9.5, height: 19.5, rx: 4.75,
-              fill: 'none', stroke: 'currentColor', strokeWidth: 1.5, opacity: 0.55,
-            }),
-            h('circle', { cx: 12, cy: 7, r: 2, fill: COLORS.fail, opacity: lamp('fail') }),
-            h('circle', { cx: 12, cy: 12, r: 2, fill: '#eab308', opacity: lamp('warn') }),
-            h('circle', { cx: 12, cy: 17, r: 2, fill: COLORS.ok, opacity: lamp('ok') }),
+          const color = { fail: '#c62828', warn: '#a65d00', ok: '#087f49' }[worst] || '#62676f'
+          const mark = worst === 'fail' ? 'M16.3 16.3l3.4 3.4m0-3.4l-3.4 3.4'
+            : worst === 'ok' ? 'M15.7 18l1.6 1.6 3-3.2'
+            : worst === 'warn' ? 'M18 15.5v2.9m0 1.5v.1'
+            : 'M15.8 18h4.4'
+          return h('svg', {
+            width: size, height: size, viewBox: '0 0 24 24', 'aria-hidden': true,
+            style: { display: 'block', flex: 'none' },
+          },
+            h('path', { d: 'M6 4.3a7.5 7.5 0 1 0 8 0M10 1.8v7', fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round' }),
+            h('circle', { cx: 18, cy: 18, r: 5.5, fill: color, stroke: '#fff', strokeWidth: 1.3 }),
+            h('path', { d: mark, fill: 'none', stroke: '#fff', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round' }),
           )
         }
 
@@ -545,15 +612,33 @@ window.__ModuleLoader__.load({
         }
 
         function TaskModal({ task, t, onClose, rowRef }) {
-          const dialog = useRef(null)
-          useEffect(() => {
-            dialog.current.showModal()
-            return () => { dialog.current?.close(); rowRef.current?.focus() }
-          }, [])
-          return createPortal(h('dialog', { ref: dialog, className: 'dsh-ops-modal', 'aria-label': `${task.title} 技术详情`,
-            onCancel: event => { event.preventDefault(); onClose() },
-            onClick: event => { if (event.target === dialog.current) { const r = dialog.current.getBoundingClientRect(); if (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom) onClose() } },
-          }, h('header', null, h('h2', null, task.title), h('button', { type: 'button', onClick: onClose }, t('close'))), h(Detail, { task, t })), document.body)
+          return h(BoardDialog, { title: `${task.title} · ${t('details')}`, t, onClose, returnRef: rowRef }, h(Detail, { task, t }))
+        }
+
+        function BoardInformation({ kind, data, notesError, t, onClose, returnRef }) {
+          const notes = data?.notes
+          const entries = [
+            [t('info.machine'), data?.host || t('info.unavailable')],
+            [t('info.snapshot'), data?.generatedAt ? absolute(Date.parse(data.generatedAt)) : t('info.unavailable')],
+            [t('info.refresh'), t('info.interval')],
+            [t('info.sources'), (data?.sources || []).map(path => h('div', { key: path }, h('code', null, path)))],
+          ]
+          return h(BoardDialog, { title: t(kind === 'help' ? 'help' : 'boardInfo'), t, onClose, returnRef },
+            h('div', { className: 'dsh-ops-info' }, kind === 'help'
+              ? h(React.Fragment, null,
+                h('p', null, t('help.intro')),
+                h('ol', null, ...['help.actions', 'help.details', 'help.fill'].map(key => h('li', { key }, t(key)))),
+                h('p', { className: 'is-muted' }, t('help.keyboard')))
+              : h(React.Fragment, null,
+                h('dl', null, ...entries.flatMap(([label, value]) => [h('dt', { key: label }, label), h('dd', { key: `${label}-v` }, value)])),
+                h('p', { className: 'is-muted' }, t('info.updated')),
+                h('p', { className: 'is-muted' }, t('info.scope')),
+                h('h3', null, t('info.notesTitle')),
+                h('p', null, t('info.explanation')),
+                h('dl', null,
+                  h('dt', null, t('info.manual')), h('dd', null, typeof notes?.filled === 'number' ? t('info.manualValue').replace('{n}', notes.filled) : t('info.unavailable')),
+                  h('dt', null, t('info.file')), h('dd', null, h('code', null, notes?.path || t('info.unavailable')))),
+                notesError ? h('p', { className: 'is-warn', role: 'alert' }, notesError) : null)))
         }
 
         function TaskRow({ t, task }) {
@@ -595,6 +680,9 @@ window.__ModuleLoader__.load({
           const snapshot = useSyncExternalStore(subscribe, getSnapshot)
           const [filter, setFilter] = useState('all')
           const [showIdle, setShowIdle] = useState(false)
+          const [information, setInformation] = useState(null)
+          const helpRef = useRef(null)
+          const infoRef = useRef(null)
 
           const data = snapshot.data
           const summary = (data && data.summary) || { total: 0, ok: 0, warn: 0, fail: 0, idle: 0 }
@@ -632,17 +720,11 @@ window.__ModuleLoader__.load({
             h(
               'div',
               { className: 'dsh-ops-head' },
-              h('div', null,
-                h('h1', null, t('title')),
-                h('p', { className: 'dsh-ops-sub' },
-                  data
-                    ? `${data.host} · ${summary.total} tasks · ${t('generated')} ${absolute(snapshot.fetchedAt || Date.parse(data.generatedAt))}`
-                    : t('loading'))),
-              h('button', {
-                type: 'button',
-                className: 'dsh-ops-refresh',
-                onClick: () => refresh(),
-              }, t('refresh')),
+              h('h1', null, t('title')),
+              h('div', { className: 'dsh-ops-head-actions' },
+                h('button', { ref: helpRef, type: 'button', className: 'dsh-ops-help-button', 'aria-haspopup': 'dialog', onClick: () => setInformation('help') }, t('help')),
+                h('button', { ref: infoRef, type: 'button', className: `dsh-ops-help-button${notesError ? ' is-warn' : ''}`, 'aria-haspopup': 'dialog', onClick: () => setInformation('data') }, t(notesError ? 'infoAttention' : 'boardInfo')),
+                h('button', { type: 'button', className: 'dsh-ops-refresh', onClick: () => refresh() }, t('refresh'))),
             ),
             h('div', { className: 'dsh-ops-filters' },
               filters.map(item => h(Filter, {
@@ -656,12 +738,6 @@ window.__ModuleLoader__.load({
                   if (next === 'idle') setShowIdle(true)
                 },
               }))),
-            notes
-              ? h('p', { className: `dsh-ops-notes${notesError ? ' is-warn' : ''}`, title: notes.path },
-                notesError
-                  ? `${notesError} · ${notes.path}`
-                  : `${t('notes.filled')} ${notes.filled}/${notes.total} · ${notes.path}${notes.created ? ` · ${t('notes.created')}` : ''}`)
-              : null,
             snapshot.status === 'error' || snapshot.status === 'stale'
               ? h('div', { className: 'dsh-ops-note' },
                 `${t('error')}: ${snapshot.error}${snapshot.status === 'stale' ? t('stale') : ''}`)
@@ -703,7 +779,7 @@ window.__ModuleLoader__.load({
                 `${t('group.idle')} · ${idleTasks.length}`)
                 : null,
             ),
-            h('p', { className: 'dsh-ops-foot' }, t('autoRefresh')),
+            information ? h(BoardInformation, { kind: information, data, notesError, t, onClose: () => setInformation(null), returnRef: information === 'help' ? helpRef : infoRef }) : null,
           )
         }
 
@@ -712,7 +788,7 @@ window.__ModuleLoader__.load({
           id: 'ops-board',
           order: 20,
           label: () => dict().title,
-        }, TrafficLightIcon))
+        }, AlwaysOnIcon))
 
         ctx.slots.inject('main', () => ctx.slots.register({
           name: 'main',
