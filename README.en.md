@@ -8,6 +8,28 @@ AI coding makes it easy to start APIs, workers, scheduled scripts and tunnels. A
 
 The goal is to reduce unnecessary resource use and keep useful tasks stable. Energy savings have not been measured or guaranteed.
 
+## A four-step tour
+
+These illustrations use synthetic data in an isolated DSH host, not production evidence. The setup image is a configuration guide, not a product wizard. Both READMEs share the same Chinese-language images.
+
+**1. Open the board** — An empty state appears when no matching tasks are found.
+
+![Empty board with no matching tasks or processes](docs/images/01-empty.png)
+
+**2. Install and enable** — Install the local bundle, enable it, then open it from the sidebar.
+
+![Local DSH bundle configuration guide; replace the example with your absolute repository path](docs/images/02-setup.png)
+
+**3. Review the lists** — Persistent tasks and running processes appear in two flat lists. Hover a status icon for its reason.
+
+![Two flat lists showing synthetic persistent tasks and running processes](docs/images/03-lists.png)
+
+**4. Hand off to your Agent** — Right-click **解释 (Explain)**, review the new chat draft, then send it yourself.
+
+![Composite of the real context menu and real DSH composer with an Explain draft; no message was sent](docs/images/04-explain-draft.png)
+
+[Capture and privacy review notes](docs/screenshots/README.md)
+
 ## Current scope
 
 macOS + DeepSeek Harness (DSH). The board reads selected launchd definitions and observes current-user developer runtimes and their descendants. It is not a complete OS process inventory.
