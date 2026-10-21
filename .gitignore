@@ -147,3 +147,14 @@ vite.config.ts.timestamp-*
 
 # Turbo Repo
 .turbo
+
+# Local diagnostics and host-specific plugin state
+node_modules/
+dist/
+evidence/
+.env
+.env.*
+!.env.example
+.DS_Store
+notes.json
+auto.json
